@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>GreenEarn - Transforma tu Reciclaje en Recompensas</title>
+    <meta name="description" content="Aplicación inteligente de reciclaje que convierte tus acciones ecológicas en puntos canjeables por increíbles recompensas. Únete a la revolución verde.">
+    <meta name="keywords" content="reciclaje, sostenibilidad, medio ambiente, recompensas, aplicación ecológica, puntos verdes">
+    <meta name="author" content="GreenEarn Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://greenearn.app/">
+    <meta property="og:title" content="GreenEarn - Transforma tu Reciclaje en Recompensas">
+    <meta property="og:description" content="Aplicación inteligente de reciclaje que convierte tus acciones ecológicas in puntos canjeables por increíbles recompensas.">
+    <meta property="og:image" content="assets/logo.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://greenearn.app/">
+    <meta property="twitter:title" content="GreenEarn - Transforma tu Reciclaje en Recompensas">
+    <meta property="twitter:description" content="Aplicación inteligente de reciclaje que convierte tus acciones ecológicas en puntos canjeables.">
+    <meta property="twitter:image" content="assets/logo.png">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="GreenEarn">
+    
+    <!-- Icons -->
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="preload" href="js/script.js" as="script">
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header" role="banner">
+        <div class="header-title">
+            <img src="assets/logo.png" alt="GreenEarn - Aplicación de Reciclaje Inteligente" class="header-logo">
+        </div>
+        <div class="header-points" role="status" aria-live="polite">
+            <span id="headerPoints">0</span> <span class="sr-only">puntos acumulados</span>pts
+        </div>
+    </header>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <main role="main">
+        <!-- Home Section -->
+        <section id="home" class="section active" aria-labelledby="home-title">
+            <div class="welcome">
+                <div class="container">
+                    <h1 id="home-title">¡Bienvenido a GreenEarn!</h1>
+                    <p>Transforma cada acción ecológica en recompensas tangibles. Recicla inteligentemente y construye un futuro más sostenible.</p>
+                    <button class="btn btn-primary" onclick="showModal('register')" id="welcomeBtn" aria-describedby="welcome-description">
+                        <span>🚀</span> Comenzar Mi Aventura Verde
+                    </button>
+                    <p id="welcome-description" class="sr-only">Inicia tu journey de reciclaje y comienza a ganar puntos inmediatamente</p>
+                    
+                    <div class="features-mobile">
+                        <article class="feature-card-mobile">
+                            <h3>🔄 Reciclaje Inteligente</h3>
+                            <p>Sistema avanzado de registro que reconoce automáticamente tipos de materiales y calcula tu impacto ambiental en tiempo real</p>
+                        </article>
+                        <article class="feature-card-mobile">
+                            <h3>⭐ Programa de Puntos</h3>
+                            <p>Algoritmo de recompensas que premia consistencia, variedad de materiales y contribución a la comunidad ecológica</p>
+                        </article>
+                        <article class="feature-card-mobile">
+                            <h3>🎁 Marketplace Exclusivo</h3>
+                            <p>Catálogo curado de productos sostenibles, experiencias únicas y beneficios de marcas comprometidas con el medio ambiente</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section" aria-labelledby="dashboard-title">
+            <div class="container">
+                <h2 id="dashboard-title" class="sr-only">Panel de Control Personal</h2>
+                
+                <!-- Quick Stats -->
+                <div class="stats-grid" role="region" aria-label="Estadísticas de Reciclaje">
+                    <div class="stat-item">
+                        <span class="stat-value" id="userPoints" aria-label="Puntos totales acumulados">0</span>
+                        <div class="stat-label">Puntos Totales</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="totalRecycled" aria-label="Kilogramos totales reciclados">0</span>
+                        <div class="stat-label">kg Reciclados</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="co2Saved" aria-label="CO2 ahorrado en kilogramos">0</span>
+                        <div class="stat-label">kg CO₂ Ahorrado</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="streak" aria-label="Días consecutivos reciclando">0</span>
+                        <div class="stat-label">Racha Actual</div>
+                    </div>
+                </div>
+
+                <!-- Add Recycling -->
+                <article class="mobile-card">
+                    <h3>➕ Registrar Nueva Actividad</h3>
+                    <form id="recyclingForm" onsubmit="addRecycling(event)" aria-label="Formulario de registro de reciclaje">
+                        <div class="form-group">
+                            <label for="materialType">Tipo de Material:</label>
+                            <select id="materialType" required aria-describedby="material-help">
+                                <option value="">Selecciona un material</option>
+                                <option value="plastico">🥤 Plástico (10 pts/kg)</option>
+                                <option value="papel">📄 Papel (5 pts/kg)</option>
+                                <option value="vidrio">🍺 Vidrio (15 pts/kg)</option>
+                                <option value="metal">🥫 Metal (20 pts/kg)</option>
+                                <option value="electronico">📱 Electrónico (50 pts/kg)</option>
+                            </select>
+                            <small id="material-help" class="form-help">Cada material tiene un valor de puntos diferente basado en su impacto ambiental</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Cantidad (kg):</label>
+                            <input type="number" id="quantity" min="0.1" step="0.1" value="1" required aria-describedby="quantity-help">
+                            <small id="quantity-help" class="form-help">Introduce el peso aproximado del material reciclado</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                            <span class="loading hidden" id="submitLoading"></span>
+                            <span id="submitText">📝 Registrar Actividad</span>
+                        </button>
+                    </form>
+                </article>
+
+                <!-- Recent Activity -->
+                <article class="mobile-card">
+                    <h3>📋 Historial de Actividades</h3>
+                    <div id="recyclingHistory" role="log" aria-live="polite">
+                        <div class="empty-state">
+                            <div class="empty-icon">🌱</div>
+                            <h4>¡Tu aventura verde está por comenzar!</h4>
+                            <p>Registra tu primera actividad de reciclaje para ver tu progreso aquí.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Achievements -->
+                <article class="mobile-card">
+                    <h3>🏆 Logros y Reconocimientos</h3>
+                    <div id="achievements" role="region" aria-label="Logros obtenidos">
+                        <div class="empty-state">
+                            <div class="empty-icon">🎯</div>
+                            <h4>Desbloquea logros increíbles</h4>
+                            <p>Sigue reciclando para obtener reconocimientos especiales y bonificaciones exclusivas.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Rewards Section -->
+        <section id="rewards" class="section" aria-labelledby="rewards-title">
+            <div class="container">
+                <header class="section-header">
+                    <h2 id="rewards-title">🎁 Marketplace de Recompensas</h2>
+                    <p class="section-subtitle">Convierte tus puntos verdes en experiencias y productos extraordinarios</p>
+                </header>
+                
+                <div class="rewards-mobile" role="region" aria-label="Catálogo de recompensas disponibles">
+                    <article class="reward-mobile">
+                        <div class="reward-icon" style="background: linear-gradient(45deg, #ff6b6b, #ff8e53);">☕</div>
+                        <div class="reward-info">
+                            <h3 class="reward-title">Café Artesanal Premium</h3>
+                            <p class="reward-desc">Disfruta de una selección de cafés de comercio justo en cafeterías asociadas</p>
+                            <span class="reward-price">50 puntos</span>
+                        </div>
+                        <button class="btn btn-primary reward-btn" onclick="redeemReward('cafe', 50)" aria-describedby="cafe-desc">
+                            Canjear
+                        </button>
+                    </article>
+
+                    <article class="reward-mobile">
+                        <div class="reward-icon" style="background: linear-gradient(45deg, #4ecdc4, #44a08d);">🎬</div>
+                        <div class="reward-info">
+                            <h3 class="reward-title">Entrada de Cine Eco-Friendly</h3>
+                            <p class="reward-desc">Películas en cines con certificación ambiental y prácticas sostenibles</p>
+                            <span class="reward-price">150 puntos</span>
+                        </div>
+                        <button class="btn btn-primary reward-btn" onclick="redeemReward('cine', 150)">
+                            Canjear
+                        </button>
+                    </article>
+
+                    <article class="reward-mobile">
+                        <div class="reward-icon" style="background: linear-gradient(45deg, #667eea, #764ba2);">🛍️</div>
+                        <div class="reward-info">
+                            <h3 class="reward-title">Descuento Verde 20%</h3>
+                            <p class="reward-desc">Descuentos exclusivos en nuestra red de tiendas ecológicas certificadas</p>
+                            <span class="reward-price">100 puntos</span>
+                        </div>
+                        <button class="btn btn-primary reward-btn" onclick="redeemReward('descuento', 100)">
+                            Canjear
+                        </button>
+                    </article>
+
+                    <article class="reward-mobile">
+                        <div class="reward-icon" style="background: linear-gradient(45deg, #f093fb, #f5576c);">🌱</div>
+                        <div class="reward-info">
+                            <h3 class="reward-title">Kit de Jardinería Urbana</h3>
+                            <p class="reward-desc">Semillas orgánicas, macetas biodegradables y guía de cultivo sostenible</p>
+                            <span class="reward-price">200 puntos</span>
+                        </div>
+                        <button class="btn btn-primary reward-btn" onclick="redeemReward('plantas', 200)">
+                            Canjear
+                        </button>
+                    </article>
+
+                    <article class="reward-mobile">
+                        <div class="reward-icon" style="background: linear-gradient(45deg, #ffecd2, #fcb69f);">🚴</div>
+                        <div class="reward-info">
+                            <h3 class="reward-title">Bicicleta Eléctrica Premium</h3>
+                            <p class="reward-desc">Transporte ecológico de última generación con batería solar integrada</p>
+                            <span class="reward-price">2000 puntos</span>
+                        </div>
+                        <button class="btn btn-primary reward-btn" onclick="redeemReward('bicicleta', 2000)">
+                            Canjear
+                        </button>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" role="navigation" aria-label="Navegación principal">
+        <a href="#" class="nav-item active" onclick="showSection('home')" id="nav-home" aria-current="page">
+            <div class="nav-item-icon">🏠</div>
+            <div class="nav-item-text">Inicio</div>
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('dashboard')" id="nav-dashboard">
+            <div class="nav-item-icon">📊</div>
+            <div class="nav-item-text">Dashboard</div>
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('rewards')" id="nav-rewards">
+            <div class="nav-item-icon">🎁</div>
+            <div class="nav-item-text">Premios</div>
+        </a>
+        <a href="#" class="nav-item" onclick="showProfile()" id="nav-profile">
+            <div class="nav-item-icon">👤</div>
+            <div class="nav-item-text">Perfil</div>
+        </a>
+    </nav>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal" role="dialog" aria-labelledby="auth-title" aria-hidden="true">
+        <div class="modal-content">
+            <button class="close" onclick="closeModal()" aria-label="Cerrar modal">&times;</button>
+            
+            <div id="loginForm">
+                <h2 id="auth-title" style="text-align: center; color: var(--primary-color); margin-bottom: 2rem; font-weight: 800;">Iniciar Sesión</h2>
+                <form onsubmit="login(event)" aria-label="Formulario de inicio de sesión">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" placeholder="tu@email.com" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña:</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••••" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <span class="loading hidden" id="loginLoading"></span>
+                        <span id="loginText">🔑 Iniciar Sesión</span>
+                    </button>
+                </form>
+                <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary);">
+                    ¿Nuevo en GreenEarn? 
+                    <a href="#" onclick="switchToRegister()" style="color: var(--primary-color); font-weight: 600;">Crea tu cuenta</a>
+                </p>
+            </div>
+            
+            <div id="registerForm" class="hidden">
+                <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 2rem; font-weight: 800;">Únete a GreenEarn</h2>
+                <form onsubmit="register(event)" aria-label="Formulario de registro">
+                    <div class="form-group">
+                        <label for="registerName">Nombre Completo:</label>
+                        <input type="text" id="registerName" placeholder="Tu nombre completo" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email:</label>
+                        <input type="email" id="registerEmail" placeholder="tu@email.com" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Contraseña:</label>
+                        <input type="password" id="registerPassword" placeholder="••••••••••" required autocomplete="new-password" minlength="8">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <span class="loading hidden" id="registerLoading"></span>
+                        <span id="registerText">🌟 Crear Mi Cuenta</span>
+                    </button>
+                </form>
+                <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary);">
+                    ¿Ya tienes cuenta? 
+                    <a href="#" onclick="switchToLogin()" style="color: var(--primary-color); font-weight: 600;">Inicia sesión</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+    
+    <!-- Screen reader only styles -->
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+        
+        .empty-state h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .form-help {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+        
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            line-height: 1.5;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</body>
+</html> 
